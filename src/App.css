@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  overflow: hidden;
 }
 
 .App-logo {
@@ -8,19 +9,199 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #fff;
   min-height: 100vh;
+  font-size: calc(10px + 2vmin);
+  color: #333;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+button {
+  font-size: 18px;
+  background-color: #378b29;
+  color: #fff;
+  border: 0px;
+  padding: .5em 1em;
+  border-radius: 5px;
+  margin: 0 1em;
+}
+
+form {
+  margin: 1em 0;
+}
+
+form button {
+  margin: 0;
+  font-size: 16px;
+  background-color: #ff0000;
+}
+
+input[type="text"] {
+  font-size: 14px;
+  margin: 0 .5em;
+  padding: .5em;
+  border-radius: 5px;
+}
+
+.appContent {
+  width: 100%;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  max-width: 1030px;
+  margin: 1em auto;
+  font-size: 18px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+ul li {
+  flex: 1 0 150px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  margin-bottom: 1em;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+ul li img {
+  margin-bottom: 0.5em;
 }
 
 .App-link {
   color: #61dafb;
 }
+
+.front {
+  width: 100%;
+}
+
+/* #region #names li {
+  /*animation: App-logo-spin infinite 20s linear;
+  display: flex;
+  background: url('images/mariah-puppy.jpg');
+  background-size: cover;
+  background-position: center center;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+  text-shadow: 0px 0px 10px black;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+  height: 25vh;
+  z-index: 0;
+  position: relative;
+}
+
+#names li:nth-of-type(even):before {
+  content: '';
+  background-color: rgba(255,0,0,0.3);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+#names li:nth-of-type(odd):before {
+  content: '';
+  background-color: rgba(0,255,0,0.4);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+#names li:nth-of-type(2) {
+  background: url('images/mariahandsanta.jpg');
+  background-size: cover;
+  background-position: center right;
+}
+
+#names li:nth-of-type(3) {
+  background: url('images/mariahornament.jpg');
+  background-size: cover;
+  background-position: center center;
+}
+
+#names li:nth-of-type(4) {
+  background: url('images/peakmimi.jpg');
+  background-size: cover;
+  background-position: center center;
+}
+
+.fixed {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: .5em;
+  box-sizing: border-box;
+  z-index: 9999;
+  width: 100%;
+  top: 46%;
+  left: 0;
+  /*background-image: linear-gradient(to right, #ff0000, green);
+}
+
+.fixed button {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: green;
+  border: 0px;
+  padding: .75em 1.5em;
+  text-transform: uppercase;
+  font-weight: 800;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0px 0px 50px black;
+  font-size: 1em;
+}
+
+@media(min-width: 768px) {
+  .fixed {
+    top: 45%;
+  }
+  .fixed button {
+    font-size: .8em;
+  }
+}
+
+@media (min-width: 1030px) {
+  #names {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+  #names li {
+    flex: 1 0 50%;
+    height: 50vh;
+  }
+  #names li:hover {
+    animation: App-logo-spin infinite 20s linear;
+  }
+  #names li:nth-of-type(2):before,
+  #names li:nth-of-type(3):before {
+    background-color: rgba(255,0,0,0.3);
+  }
+  #names li:nth-of-type(1):before,
+  #names li:nth-of-type(4):before {
+    background-color: rgba(0,255,0,0.4);
+  }
+}*/
 
 @keyframes App-logo-spin {
   from {
