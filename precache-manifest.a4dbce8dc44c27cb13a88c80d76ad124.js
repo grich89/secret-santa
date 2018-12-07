@@ -16,7 +16,7 @@ self.__precacheManifest = [
     "url": "/secret-santa/static/css/main.1df13610.chunk.css"
   },
   {
-    "revision": "648d5a7f6f49f9b81fff85e92f87bc1d",
+    "revision": "48b643298a646cbf098454be71f0d72b",
     "url": "/secret-santa/index.html"
   }
 ];
