@@ -1,3 +1,26 @@
+/* Snow animation */
+
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index: -1;
+  background-image: linear-gradient(to-bottom, rgb(105,173,212) 0%, rgb(23,82,145) 84%);
+  background-image: -o-linear-gradient(to-bottom, rgb(105,173,212) 0%, rgb(23,82,145) 84%);
+  background-image: -moz-linear-gradient(to-bottom, rgb(105,173,212) 0%, rgb(23,82,145) 84%);
+  background-image: -webkit-linear-gradient(to-bottom, rgb(105,173,212) 0%, rgb(23,82,145) 84%);
+  background-image: -ms-linear-gradient(to-bottom, rgb(105,173,212) 0%, rgb(23,82,145) 84%);
+  background-image: -webkit-gradient(
+      linear,
+      left bottom,
+      left top,
+      color-stop(0, rgb(105,173,212)),
+      color-stop(0.84, rgb(23,82,145))
+  );
+}
+
+/* End snow animation */
+
 .App {
   text-align: center;
   overflow: hidden;
@@ -9,10 +32,9 @@
 }
 
 .App-header {
-  background-color: #fff;
   min-height: 100vh;
   font-size: calc(10px + 2vmin);
-  color: #333;
+  color: #fff;
   display:flex;
   align-items: center;
   justify-content: center;
@@ -22,8 +44,8 @@
 button {
   font-size: 18px;
   background-color: #378b29;
+  border: 2px solid rgba(255,255,255,0.5);
   color: #fff;
-  border: 0px;
   padding: .5em 1em;
   border-radius: 5px;
   margin: 0 1em;
@@ -35,7 +57,7 @@ form {
 
 form button {
   margin: 0;
-  font-size: 16px;
+  font-size: 14px;
   background-color: #ff0000;
 }
 
@@ -69,6 +91,11 @@ ul li {
   margin-bottom: 1em;
   font-weight: 800;
   text-transform: uppercase;
+  transition: .4s opacity;
+}
+
+ul li.active {
+  opacity: .5;
 }
 
 ul li img {

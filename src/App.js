@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { instanceOf } from 'prop-types';
 import { withCookies, Cookies } from 'react-cookie';
 import firebase from './firebase.js';
-import santaIcon from './images/santa-icon.jpg';
+import santaIcon from './images/santa-transparent.png';
 import './App.css';
 
 class App extends Component {
@@ -23,11 +23,14 @@ class App extends Component {
       buttonClicked: false,
       namesLoaded: false,
       everyonePicked: false,
+      yourName: '',
+      setActive: false,
       santa: cookies.get("santa"),
       name: '',
     }
     this.setListValue = this.setListValue.bind(this);
     this.addListValues = this.addListValues.bind(this);
+    this.yourName = this.yourName.bind(this);
     this.randomName = this.randomName.bind(this);
     this.resetSantas = this.resetSantas.bind(this);
   }
@@ -64,6 +67,14 @@ class App extends Component {
     });
   }
 
+  yourName(name, e) {
+    // sets the user's on click
+    this.setState({
+      setActive: true,
+      yourName: name,
+    })
+  }
+
   randomName() {
 
     // load the cookies functionality 
@@ -71,9 +82,19 @@ class App extends Component {
 
     // names that have already been picked
     let pickedArray = this.state.pickedNames;
+    let yourName = this.state.yourName.name;
+
+    console.log(this.state.names[0]);
+
+    // remove the person's own name from the list on click
+    let filteredNames = this.state.names[0].filter(function(name) {
+      return name !== yourName;
+    });
+
+    console.log(filteredNames);
 
     // find names that haven't been picked
-    let filteredNames = this.state.names[0].filter(function(name) {
+    filteredNames = this.state.names[0].filter(function(name) {
       return !pickedArray.includes(name);
     });
     
@@ -134,15 +155,19 @@ class App extends Component {
 
           <div className="appContent">
 
-            {console.log(this.state.names[0])}
-          
-            {console.log('hi this doesnt work' + this.state.names[0])}
             {this.state.names[0] !== undefined ?
-            <ul id="names">
-              {this.state.names[0].map((name, index) => (
-                <li key={index}><img src={santaIcon} alt={name} />{name}</li>
-              ))}
-            </ul>
+            <div className="names-container">
+            <p>Click on your own name to remove it from the running.</p>
+              <ul id="names">
+                {this.state.names[0].map((name, index) => (
+                  <li 
+                   key={index} 
+                   onClick={() => this.yourName({name})}
+                   className={this.state.yourName.name === name ? 'active': 'inactive'}
+                   ><img src={santaIcon} alt={name} />{name}</li>
+                ))}
+              </ul>
+            </div>
             : <p>You have already viewed this list.</p>}
 
             {!this.state.buttonClicked ?
@@ -281,7 +306,7 @@ export class CreateList extends Component {
             </form>
 
             {this.state.listName.length > 0 ?
-              <h2>Santas: {this.state.listName}</h2>
+              <h2>List name: {this.state.listName}</h2>
             : null}
             <ul className="new-list-names">
               {this.state.newNames.map((name, index) => (
