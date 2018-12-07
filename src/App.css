@@ -24,6 +24,7 @@ canvas{
 .App {
   text-align: center;
   overflow: hidden;
+  padding: 1em;
 }
 
 .App-logo {
@@ -58,7 +59,7 @@ form {
 form button {
   margin: 0;
   font-size: 14px;
-  background-color: #ff0000;
+  background-color: #ED1F21;
 }
 
 input[type="text"] {
@@ -108,6 +109,24 @@ ul li img {
 
 .front {
   width: 100%;
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  .front button {
+    margin-bottom: .5em;
+  }
+  ul {
+    display: block;
+  }
+  form.create-list {
+    text-align: center;
+  }
+  form.create-list input,
+  form.create-list button {
+    display: block;
+    margin: .5em auto;
+  }
 }
 
 /* #region #names li {
