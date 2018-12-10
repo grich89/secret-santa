@@ -3,6 +3,7 @@ import { instanceOf } from 'prop-types';
 import { withCookies, Cookies } from 'react-cookie';
 import firebase from './firebase.js';
 import santaIcon from './images/santa-transparent.png';
+import CreateList from './CreateList.js';
 import './App.css';
 
 class App extends Component {
@@ -36,6 +37,7 @@ class App extends Component {
   }
 
   setListValue(val) {
+    // sets the list name for the coming methods
     this.setState({
       selectedList: this.state.selectedList = val,
     }, this.addListValues);
@@ -43,17 +45,19 @@ class App extends Component {
 
   addListValues() {
     // get the full list of names from firebase
-    const ref = firebase.database().ref(this.state.selectedList);
+    const ref = firebase.database().ref(this.state.selectedList).child('names');
     ref.on('value', snapshot => {
-      console.log(snapshot.child);
       snapshot.forEach(child => {
-        console.log([child.val().name]);
+        console.log(child.val().name);
+        var item = child.val().name;
         this.setState({
           namesLoaded: true,
-          names: this.state.names.concat([child.val().name]),
+          names: this.state.names.concat(item),
         });
       });      
     });
+
+    console.log(this.state.names);
 
     // get the list of already picked names from firebase
     const pickedRef = firebase.database().ref(this.state.selectedList).child("picked");
@@ -84,17 +88,15 @@ class App extends Component {
     let pickedArray = this.state.pickedNames;
     let yourName = this.state.yourName.name;
 
-    console.log(this.state.names[0]);
-
     // remove the person's own name from the list on click
-    let filteredNames = this.state.names[0].filter(function(name) {
+    let filteredNames = this.state.names.filter(function(name) {
       return name !== yourName;
     });
 
     console.log(filteredNames);
 
     // find names that haven't been picked
-    filteredNames = this.state.names[0].filter(function(name) {
+    filteredNames = this.state.names.filter(function(name) {
       return !pickedArray.includes(name);
     });
     
@@ -137,6 +139,8 @@ class App extends Component {
         buttonClicked: false,
         namesLoaded: false,
         everyonePicked: false,
+        yourName: '',
+        setActive: false,
         name: '',
       })
     }
@@ -155,11 +159,12 @@ class App extends Component {
 
           <div className="appContent">
 
-            {this.state.names[0] !== undefined ?
+            {this.state.names !== undefined ?
             <div className="names-container">
-            <p>Click on your own name to remove it from the running.</p>
+            <p>Click on your own name to remove it from your Secret Santa list.</p>
+              {console.log(this.state.names)}
               <ul id="names">
-                {this.state.names[0].map((name, index) => (
+                {this.state.names.map((name, index) => (
                   <li 
                    key={index} 
                    onClick={() => this.yourName({name})}
@@ -189,137 +194,6 @@ class App extends Component {
           {this.state.santa ? <p>You already have picked: {this.state.santa}</p> : null}
 
         </header>
-      </div>
-    );
-  }
-}
-
-export class CreateList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      newName: '',
-      listName: '',
-      newNames: [],
-      createList: false,
-      listCreated: false,
-      lookUpList: false
-    }
-    this.createList = this.createList.bind(this);
-    this.saveName = this.saveName.bind(this);
-    this.saveListName = this.saveListName.bind(this);
-    this.addName = this.addName.bind(this);
-    this.newList = this.newList.bind(this);
-    this.lookUpList = this.lookUpList.bind(this);
-    this.lookUpSubmit = this.lookUpSubmit.bind(this);
-  }
-  createList() {
-    this.setState({
-      newName: '',
-      listName: '',
-      newNames: [],
-      lookUpList: false,
-      createList: true
-    })
-    this.props.restart(true);
-  }
-  saveName(e) {
-    this.setState({
-      newName: e.target.value
-    });
-  }
-  saveListName(e) {
-    this.setState({
-      listName: e.target.value
-    });
-  }
-  addName(e) {
-    e.preventDefault();
-    if (this.state.newName.length > 0 && this.state.listName.length > 0) {
-      this.setState({
-        newNames: this.state.newNames.concat(this.state.newName),
-        newName: ''
-      });
-    } else {
-      console.log('fields are not complete');
-    }
-  }
-  newList(arr) {
-    const ref = firebase.database().ref(this.state.listName);
-    const newRef = ref.push();
-    newRef.set({
-      name: arr
-    })
-    this.setState({
-      createList: false,
-      listCreated: true,
-      newNames: []
-    })
-    this.props.handlerFromParent(this.state.listName);
-  }
-  lookUpList() {
-    this.setState({
-      newName: '',
-      listName: '',
-      newNames: [],
-      createList: false,
-      lookUpList: true
-    })
-    this.props.restart(true);
-  }
-  lookUpSubmit(e) {
-    e.preventDefault();
-    if (this.state.listName.length > 0) {
-      this.setState({
-        listName: '',
-      })
-      this.props.restart(true);
-      this.props.handlerFromParent(this.state.listName);
-    } else {
-      console.log('you must enter a list name!');
-    }
-  }
-  render() {
-    return (
-      <div className="front">
-
-        <button onClick={() => this.createList()}>Create a Santa List</button>
-        <button onClick={() => this.lookUpList()}>Find a Santa List</button>
-
-        {this.state.lookUpList ?
-          <div className="lookUpForm">
-            <form onSubmit={this.lookUpSubmit} className="list-lookup">
-              <input type="text" placeholder="List Name" value={this.state.listName} onChange={this.saveListName} />
-              <button type="submit">Find</button>
-            </form>
-          </div>
-        : null}
-
-        {this.state.createList ?
-
-          <div className="newList">
-
-            <form onSubmit={this.addName} className="create-list">
-              <input type="text" placeholder="List Name" value={this.state.listName} onChange={this.saveListName} />
-              <input type="text" placeholder="Name" value={this.state.newName} onChange={this.saveName} />
-              <button type="submit">Add</button>
-            </form>
-
-            {this.state.listName.length > 0 ?
-              <h2>List name: {this.state.listName}</h2>
-            : null}
-            <ul className="new-list-names">
-              {this.state.newNames.map((name, index) => (
-                <li key={index}><img src={santaIcon} alt={name} />{name}</li>
-              ))}
-            </ul>
-
-            {this.state.newNames.length > 0 && this.state.listName.length > 0 ?
-              <button onClick={() => this.newList(this.state.newNames)}>Create</button>
-            : null}
-
-          </div>
-        : null}
       </div>
     );
   }
