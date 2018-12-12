@@ -11,7 +11,8 @@ export class CreateList extends Component {
         newNames: [],
         createList: false,
         listCreated: false,
-        lookUpList: false
+        lookUpList: false,
+        lookUpError: false,
       }
       this.createList = this.createList.bind(this);
       this.saveName = this.saveName.bind(this);
@@ -72,7 +73,8 @@ export class CreateList extends Component {
         listName: '',
         newNames: [],
         createList: false,
-        lookUpList: true
+        lookUpList: true,
+        lookUpError: false,
       })
       this.props.restart(true);
     }
@@ -81,10 +83,14 @@ export class CreateList extends Component {
       if (this.state.listName.length > 0) {
         this.setState({
           listName: '',
+          lookUpError: false,
         })
         this.props.handlerFromParent(this.state.listName);
       } else {
         console.log('you must enter a list name!');
+        this.setState({
+          lookUpError: true,
+        })
       }
     }
     render() {
@@ -100,6 +106,9 @@ export class CreateList extends Component {
                 <input type="text" placeholder="List Name" value={this.state.listName} onChange={this.saveListName} />
                 <button type="submit">Find</button>
               </form>
+              {this.state.lookUpError ? 
+                <p>You must enter a list name!</p>
+              : null}
             </div>
           : null}
   

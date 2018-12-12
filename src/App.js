@@ -21,6 +21,7 @@ class App extends Component {
       pickedNames: [],
       selectedName: '',
       selectedList: '',
+      noListError: false,
       buttonClicked: false,
       namesLoaded: false,
       everyonePicked: false,
@@ -47,17 +48,23 @@ class App extends Component {
     // get the full list of names from firebase
     const ref = firebase.database().ref(this.state.selectedList).child('names');
     ref.on('value', snapshot => {
-      snapshot.forEach(child => {
-        console.log(child.val().name);
-        var item = child.val().name;
+      if (snapshot.val() === null) {
+        console.log('this is null');
         this.setState({
-          namesLoaded: true,
-          names: this.state.names.concat(item),
+          noListError: true,
+        })
+      } else {
+        snapshot.forEach(child => {
+          console.log(child.val().name);
+          var item = child.val().name;
+          this.setState({
+            namesLoaded: true,
+            noListError: false,
+            names: this.state.names.concat(item),
+          });
         });
-      });      
+      }      
     });
-
-    console.log(this.state.names);
 
     // get the list of already picked names from firebase
     const pickedRef = firebase.database().ref(this.state.selectedList).child("picked");
@@ -159,7 +166,6 @@ class App extends Component {
 
           <div className="appContent">
 
-            {this.state.names !== undefined ?
             <div className="names-container">
             <p>Click on your own name to remove it from your Secret Santa list.</p>
               {console.log(this.state.names)}
@@ -173,7 +179,6 @@ class App extends Component {
                 ))}
               </ul>
             </div>
-            : <p>You have already viewed this list.</p>}
 
             {!this.state.buttonClicked ?
 
@@ -185,6 +190,10 @@ class App extends Component {
 
           </div>
 
+          : null}
+
+          {this.state.noListError ?
+            <p>No list was found with that name :(.</p>  
           : null}
 
           {this.state.namesLoaded && this.state.everyonePicked ?
