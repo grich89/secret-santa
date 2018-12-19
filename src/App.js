@@ -62,12 +62,12 @@ class App extends Component {
           console.log(item);
           namesList.push(item);
         });
-      }
-      this.setState({
-        namesLoaded: true,
-        noListError: false,
-        names: namesList
-      });      
+        this.setState({
+          namesLoaded: true,
+          noListError: false,
+          names: namesList
+        });   
+      }   
     });
     
     // get the list of already picked names from firebase
@@ -177,7 +177,7 @@ class App extends Component {
           <div className="appContent">
 
             <div className="names-container">
-            <p>Click on your own name to remove it from your Secret Santa list.</p>
+            <p>Click on your own name below to remove it before revealing your Secret Santa.</p>
               {console.log(this.state.names)}
               <ul id="names">
                 {this.state.names.map((name, index) => (
