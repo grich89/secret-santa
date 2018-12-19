@@ -28,6 +28,7 @@ export class CreateList extends Component {
         newName: '',
         listName: '',
         newNames: [],
+        listExists: false,
         lookUpList: false,
         createList: true
       })
@@ -38,9 +39,27 @@ export class CreateList extends Component {
       });
     }
     saveListName(e) {
-      this.setState({
-        listName: e.target.value
+      const ref = firebase.database().ref();
+      let newListName = e.target.value;
+      let existingLists = [];
+      ref.on('value', snapshot => {
+        snapshot.forEach(child => {
+          if (newListName.toLowerCase() === child.key) {
+            existingLists.push(child.key);
+          }
+        });
       });
+      if (existingLists.length !== 0) {
+        this.setState({
+          listExists: true,
+          listName: newListName
+        });
+      } else {
+        this.setState({
+          listExists: false,
+          listName: newListName
+        })
+      }
     }
     addName(e) {
       e.preventDefault();
@@ -54,7 +73,7 @@ export class CreateList extends Component {
       }
     }
     newList(arr) {
-      const ref = firebase.database().ref(this.state.listName).child("names");
+      const ref = firebase.database().ref(this.state.listName.toLowerCase()).child("names");
       arr.forEach(function(item) {
         ref.push({
           name: item,
@@ -65,7 +84,7 @@ export class CreateList extends Component {
         listCreated: true,
         newNames: []
       })
-      this.props.handlerFromParent(this.state.listName);
+      this.props.handlerFromParent(this.state.listName.toLowerCase());
     }
     lookUpList() {
       this.setState({
@@ -85,7 +104,7 @@ export class CreateList extends Component {
           listName: '',
           lookUpError: false,
         })
-        this.props.handlerFromParent(this.state.listName);
+        this.props.handlerFromParent(this.state.listName.toLowerCase());
       } else {
         console.log('you must enter a list name!');
         this.setState({
@@ -119,24 +138,32 @@ export class CreateList extends Component {
               <form onSubmit={this.addName} className="create-list">
                 <input type="text" placeholder="List Name" value={this.state.listName} onChange={this.saveListName} />
                 <input type="text" placeholder="Name" value={this.state.newName} onChange={this.saveName} />
-                <button type="submit">Add</button>
-              </form>
+                {!this.state.listExists ?
+                  <button type="submit">Add</button>
+                : null}
+              </form>              
   
               {this.state.listName.length > 0 ?
                 <h2>List name: {this.state.listName}</h2>
               : null}
+              
+              {this.state.listExists ?
+                <p>This list name is already in use :(.</p>
+              : null}
+
               <ul className="new-list-names">
                 {this.state.newNames.map((name, index) => (
                   <li key={index}><img src={santaIcon} alt={name} />{name}</li>
                 ))}
               </ul>
-  
+
               {this.state.newNames.length >= 3 && this.state.listName.length > 0 ?
                 <button onClick={() => this.newList(this.state.newNames)}>Create</button>
               : <p>A list name and at least three names are required for Secret Santa.</p>}
   
             </div>
           : null}
+
         </div>
       );
     }

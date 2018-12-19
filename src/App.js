@@ -39,14 +39,17 @@ class App extends Component {
 
   setListValue(val) {
     // sets the list name for the coming methods
+    let listName = val;
     this.setState({
-      selectedList: this.state.selectedList = val,
+      selectedList: listName,
     }, this.addListValues);
   }
 
   addListValues() {
     // get the full list of names from firebase
+    console.log(this.state.selectedList);
     const ref = firebase.database().ref(this.state.selectedList).child('names');
+    let namesList = [];
     ref.on('value', snapshot => {
       if (snapshot.val() === null) {
         console.log('this is null');
@@ -55,30 +58,33 @@ class App extends Component {
         })
       } else {
         snapshot.forEach(child => {
-          console.log(child.val().name);
-          var item = child.val().name;
-          this.setState({
-            namesLoaded: true,
-            noListError: false,
-            names: this.state.names.concat(item),
-          });
+          let item = child.val().name;
+          console.log(item);
+          namesList.push(item);
         });
-      }      
+      }
+      this.setState({
+        namesLoaded: true,
+        noListError: false,
+        names: namesList
+      });      
     });
-
+    
     // get the list of already picked names from firebase
     const pickedRef = firebase.database().ref(this.state.selectedList).child("picked");
+    let pickedNames = [];
     pickedRef.on('value', snapshot => {
       snapshot.forEach(child => {
        var picked = child.val().picked;
-       this.setState({
-          pickedNames: this.state.pickedNames.concat(picked),
-       });
+       pickedNames.push(picked);
+      });
+      this.setState({
+        pickedNames: pickedNames,
       });
     });
   }
 
-  yourName(name, e) {
+  yourName(name) {
     // sets the user's on click
     this.setState({
       setActive: true,
@@ -160,7 +166,11 @@ class App extends Component {
           <CreateList 
             handlerFromParent={this.setListValue} 
             restart={this.resetSantas}
-          />
+          />          
+
+          {this.state.noListError ?
+            <p>No list was found with that name :(.</p>  
+          : null}
 
           {this.state.namesLoaded && !this.state.everyonePicked ?
 
@@ -190,10 +200,6 @@ class App extends Component {
 
           </div>
 
-          : null}
-
-          {this.state.noListError ?
-            <p>No list was found with that name :(.</p>  
           : null}
 
           {this.state.namesLoaded && this.state.everyonePicked ?
