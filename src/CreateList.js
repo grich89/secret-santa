@@ -20,6 +20,7 @@ export class CreateList extends Component {
       this.saveListName = this.saveListName.bind(this);
       this.saveLimit = this.saveLimit.bind(this);
       this.addName = this.addName.bind(this);
+      this.removeName = this.removeName.bind(this);
       this.newList = this.newList.bind(this);
       this.lookUpList = this.lookUpList.bind(this);
       this.lookUpSubmit = this.lookUpSubmit.bind(this);
@@ -80,6 +81,16 @@ export class CreateList extends Component {
       } else {
         console.log('fields are not complete');
       }
+    }
+    removeName(val) {
+      console.log(val);
+      let namesList = this.state.newNames;
+      let nameToRemove = val.name;
+      namesList.pop(nameToRemove);
+      console.log(namesList);
+      this.setState({
+        newNames: namesList
+      })
     }
     newList(arr) {
       const ref = firebase.database().ref(this.state.listName.toLowerCase()).child("names");
@@ -170,7 +181,7 @@ export class CreateList extends Component {
 
               <ul className="new-list-names">
                 {this.state.newNames.map((name, index) => (
-                  <li key={index}><img src={santaIcon} alt={name} />{name}</li>
+                  <li onClick={() => this.removeName({name})} key={index}><span className="remove">x</span><img src={santaIcon} alt={name} />{name}</li>
                 ))}
               </ul>
 

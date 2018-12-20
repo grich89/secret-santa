@@ -111,6 +111,20 @@ ul li img {
   width: 100%;
 }
 
+.remove {
+  background: #ED1F21;
+  color: white;
+  padding: .35em .6em;
+  border-radius: 100%;
+  font-size: .7em;
+  border: 1px solid black;
+  margin-bottom: 0.5em;
+}
+
+.remove:hover {
+  background: black;
+}
+
 /* mobile */
 @media (max-width: 768px) {
   .front button {
