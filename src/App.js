@@ -21,6 +21,7 @@ class App extends Component {
       pickedNames: [],
       selectedName: '',
       selectedList: '',
+      limit: '',
       noListError: false,
       buttonClicked: false,
       namesLoaded: false,
@@ -69,6 +70,22 @@ class App extends Component {
         });   
       }   
     });
+
+    const limitRef = firebase.database().ref(this.state.selectedList).child('limit');
+    let limitVal = '';
+    limitRef.on('value', snapshot => {
+      if (snapshot.val() !== null) {
+        snapshot.forEach(child => {
+          limitVal = child.val().limit;
+        })
+        console.log(limitVal);
+        this.setState({
+          limit: limitVal
+        })
+      } else {
+        console.log('no limit set');
+      }
+    });
     
     // get the list of already picked names from firebase
     const pickedRef = firebase.database().ref(this.state.selectedList).child("picked");
@@ -85,6 +102,7 @@ class App extends Component {
   }
 
   yourName(name) {
+    console.log(name.name);
     // sets the user's on click
     this.setState({
       setActive: true,
@@ -106,12 +124,12 @@ class App extends Component {
       return name !== yourName;
     });
 
-    console.log(filteredNames);
-
     // find names that haven't been picked
-    filteredNames = this.state.names.filter(function(name) {
+    filteredNames = filteredNames.filter(function(name) {
       return !pickedArray.includes(name);
     });
+
+    console.log(filteredNames);
     
     if (filteredNames.length !== 0) {
       // randomly select a name from the filteredNames
@@ -149,6 +167,7 @@ class App extends Component {
         pickedNames: [],
         selectedName: '',
         selectedList: '',
+        limit: '',
         buttonClicked: false,
         namesLoaded: false,
         everyonePicked: false,
@@ -189,6 +208,10 @@ class App extends Component {
                 ))}
               </ul>
             </div>
+
+            {this.state.limit ?
+              <p><strong>Spending Limit:</strong> ${this.state.limit}</p>
+            : null}
 
             {!this.state.buttonClicked ?
 

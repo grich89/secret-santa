@@ -8,6 +8,7 @@ export class CreateList extends Component {
       this.state = {
         newName: '',
         listName: '',
+        limit: '',
         newNames: [],
         createList: false,
         listCreated: false,
@@ -17,6 +18,7 @@ export class CreateList extends Component {
       this.createList = this.createList.bind(this);
       this.saveName = this.saveName.bind(this);
       this.saveListName = this.saveListName.bind(this);
+      this.saveLimit = this.saveLimit.bind(this);
       this.addName = this.addName.bind(this);
       this.newList = this.newList.bind(this);
       this.lookUpList = this.lookUpList.bind(this);
@@ -27,6 +29,7 @@ export class CreateList extends Component {
       this.setState({
         newName: '',
         listName: '',
+        limit: '',
         newNames: [],
         listExists: false,
         lookUpList: false,
@@ -61,6 +64,12 @@ export class CreateList extends Component {
         })
       }
     }
+    saveLimit(e) {
+      let limitVal = e.target.value;
+      this.setState({
+        limit: limitVal
+      });
+    }
     addName(e) {
       e.preventDefault();
       if (this.state.newName.length > 0 && this.state.listName.length > 0) {
@@ -74,6 +83,7 @@ export class CreateList extends Component {
     }
     newList(arr) {
       const ref = firebase.database().ref(this.state.listName.toLowerCase()).child("names");
+      const limitRef = firebase.database().ref(this.state.listName.toLowerCase()).child("limit");
       arr.forEach(function(item) {
         ref.push({
           name: item,
@@ -84,12 +94,19 @@ export class CreateList extends Component {
         listCreated: true,
         newNames: []
       })
+      // push up the limit unless THE LIMIT DOES NOT EXIST!
+      if (this.state.limit.length > 0) { 
+        limitRef.push({
+          limit: this.state.limit
+        });
+      }
       this.props.handlerFromParent(this.state.listName.toLowerCase());
     }
     lookUpList() {
       this.setState({
         newName: '',
         listName: '',
+        limit: '',
         newNames: [],
         createList: false,
         lookUpList: true,
@@ -98,6 +115,7 @@ export class CreateList extends Component {
       this.props.restart(true);
     }
     lookUpSubmit(e) {
+      this.props.restart(true);
       e.preventDefault();
       if (this.state.listName.length > 0) {
         this.setState({
@@ -114,8 +132,7 @@ export class CreateList extends Component {
     }
     render() {
       return (
-        <div className="front">
-  
+        <div className="front">  
           <button onClick={() => this.createList()}>Create a Santa List</button>
           <button onClick={() => this.lookUpList()}>Find a Santa List</button>
   
@@ -158,7 +175,10 @@ export class CreateList extends Component {
               </ul>
 
               {this.state.newNames.length >= 3 && this.state.listName.length > 0 ?
-                <button onClick={() => this.newList(this.state.newNames)}>Create</button>
+                <div>
+                  <input type="text" placeholder="Limit" value={this.state.limit} onChange={this.saveLimit} />
+                  <button onClick={() => this.newList(this.state.newNames)}>Create</button>
+                </div>
               : <p>A list name and at least three names are required for Secret Santa.</p>}
   
             </div>
